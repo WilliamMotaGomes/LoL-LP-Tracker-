@@ -8,7 +8,7 @@ import {
   MessageComponentTypes,
   verifyKeyMiddleware,
 } from 'discord-interactions';
-import { getRandomEmoji, DiscordRequest } from './utils.js';
+import {checkIfPlayerExist} from './lolApi.js'
 
 // Create an express app
 const app = express();
@@ -23,17 +23,10 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
   // Interaction id, type and data
   const { id, type, data } = req.body;
 
-  /**
-   * Handle verification requests
-   */
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
   }
 
-  /**
-   * Handle slash command requests
-   * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
-   */
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name } = data;
 
@@ -41,11 +34,12 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     {
       const options = data.options;
       const accountName = options.find(opt => opt.name === 'account_name')?.value;
+      const accountTag = options.find(opt => opt.name === 'account_tag')?.value;
       const accountRegion = options.find(opt => opt.name === 'account_region')?.value;
-      const accountExist = true;
+      let accountExist;
 
-      //when lol api available check if account exists
-      
+      accountExist = await checkIfPlayerExist(accountName,accountTag,accountRegion);
+      //save account info at some point
       if(accountExist)
       {
         return res.send({
@@ -55,7 +49,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
             components: [
               {
                 type: MessageComponentTypes.TEXT_DISPLAY,
-                content: `Account: ${accountName}#${accountRegion} added !`
+                content: `Account : ${accountName}#${accountTag} added !`
               }
             ]
           }
@@ -70,7 +64,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
             components: [
               {
                 type: MessageComponentTypes.TEXT_DISPLAY,
-                content: `Account: ${accountName}#${accountRegion} not found !`
+                content: `Account : ${accountName}#${accountTag} for region ${accountRegion} not found.`
               }
             ]
           }

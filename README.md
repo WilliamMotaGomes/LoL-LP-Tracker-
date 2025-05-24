@@ -1,10 +1,10 @@
 # TODO
 
 - [x] Add Account Command
-- [ ] Connect to LoL API
+- [x] Connect to LoL API
 - [ ] Gather Data from Account
 - [ ] Support Multiple Accounts Dynamically
-- [ ] Store Data in Database
+- [ ] Manage Data (Store, Delete, Save...) 
 - [ ] Track Games
 - [ ] Track LP (League Points)
 - [ ] Show Start/End Match Messages

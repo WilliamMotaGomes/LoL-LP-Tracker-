@@ -9,16 +9,36 @@ const ADD_ACCOUNT_COMMAND = {
   contexts: [0, 1, 2],
   options:
   [{
-    name: 'account_name',
+    name: 'game_name',
     description: 'Account name to add',
     type: 3,
     required: true
   },
   {
-    name: 'account_region',
-    description: 'Account region to add',
+    name: 'account_tag',
+    description: 'Account tag to add',
     type: 3,
     required: true
+  },
+  {
+    name: 'account_region',
+    description: 'Account name to add',
+    type: 3,
+    required: true,
+    choices: 
+    [
+      {
+        name: "Europe",
+        value: "EUROPE"
+      },
+      {
+        name: "Asia",
+        value: "ASIA"
+      },
+      {
+        name: "America",
+        value: "AMERICAS"
+      }]
   }]
 };
 
