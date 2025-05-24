@@ -1,11 +1,12 @@
 # TODO
-# ADD ACCOUNT COMMAND
-# CONNECTION TO LOL API
-# GATHER DATA FROM ACCOUNT
-# DYNAMIC FOR MULTIPLE ACCOUNTS
-# STOCK DATA IN DB
-# GAME TRACKING
-# LP TRACKING
-# START MATCH AND END MATCH MESSAGE
-# SHOW LEADERBORD OF ACCOUNTS IN MEMORY
-# HANDLE MORE THAN 10 ACCOUNTS FOR LEADERBOARD (NEXT PAGE PREVIOUS PAGE...)
+
+- [x] Add Account Command
+- [ ] Connect to LoL API
+- [ ] Gather Data from Account
+- [ ] Support Multiple Accounts Dynamically
+- [ ] Store Data in Database
+- [ ] Track Games
+- [ ] Track LP (League Points)
+- [ ] Show Start/End Match Messages
+- [ ] Display Leaderboard of Accounts in Memory
+- [ ] Handle More Than 10 Accounts in Leaderboard (Pagination: Next/Previous Page)
