@@ -1,0 +1,2 @@
+export const FLEXQUEUE_STRING = 'RANKED_SOLO_5x5';
+export const SOLOQUEUE_STRING = 'RANKED_FLEX_SR';

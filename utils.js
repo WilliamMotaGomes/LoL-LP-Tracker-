@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { unlink } from 'fs/promises';
 
 export async function DiscordRequest(endpoint, options) {
   // append endpoint to root API URL
@@ -36,12 +37,16 @@ export async function InstallGlobalCommands(appId, commands) {
   }
 }
 
-// Simple method that returns a random emoji from list
-export function getRandomEmoji() {
-  const emojiList = ['😭','😄','😌','🤓','😎','😤','🤖','😶‍🌫️','🌏','📸','💿','👋','🌊','✨'];
-  return emojiList[Math.floor(Math.random() * emojiList.length)];
-}
-
 export function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export async function deletePlayerProfile(gameName,gameTag) {
+  try {
+    await unlink(`./players/${gameName}#${gameTag}.json`);
+    return true;
+  } catch (err) {
+    console.error('Error deleting the file:', err);
+    return false;
+  }
 }

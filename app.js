@@ -8,7 +8,8 @@ import {
   MessageComponentTypes,
   verifyKeyMiddleware,
 } from 'discord-interactions';
-import {checkIfPlayerExist} from './lolApi.js'
+import {deletePlayerProfile} from './utils.js'
+import {setupPlayer} from './lolApi.js'
 
 // Create an express app
 const app = express();
@@ -33,13 +34,13 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     if (name === 'addaccount')
     {
       const options = data.options;
-      const accountName = options.find(opt => opt.name === 'account_name')?.value;
-      const accountTag = options.find(opt => opt.name === 'account_tag')?.value;
+      const gameName = options.find(opt => opt.name === 'game_name')?.value;
+      const gameTag = options.find(opt => opt.name === 'game_tag')?.value;
       const accountRegion = options.find(opt => opt.name === 'account_region')?.value;
       let accountExist;
 
-      accountExist = await checkIfPlayerExist(accountName,accountTag,accountRegion);
-      //save account info at some point
+      accountExist = await setupPlayer(gameName,gameTag,accountRegion);
+
       if(accountExist)
       {
         return res.send({
@@ -49,7 +50,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
             components: [
               {
                 type: MessageComponentTypes.TEXT_DISPLAY,
-                content: `Account : ${accountName}#${accountTag} added !`
+                content: `Account : ${gameName}#${gameTag} added !`
               }
             ]
           }
@@ -64,16 +65,51 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
             components: [
               {
                 type: MessageComponentTypes.TEXT_DISPLAY,
-                content: `Account : ${accountName}#${accountTag} for region ${accountRegion} not found.`
+                content: `Account : ${gameName}#${gameTag} for region ${accountRegion} not found or no ranked data available.`
               }
             ]
           }
         });
       }
     }
+    else if (name === 'removeaccount')
+    {
+      const options = data.options;
+      const gameName = options.find(opt => opt.name === 'game_name')?.value;
+      const gameTag = options.find(opt => opt.name === 'game_tag')?.value;
+      let accountExist = await deletePlayerProfile(gameName,gameTag);
 
-    console.error(`unknown command: ${name}`);
-    return res.status(400).json({ error: 'unknown command' });
+      if(accountExist)
+      {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Account : ${gameName}#${gameTag} removed.`
+              }
+            ]
+          }
+        });
+      }
+      else
+      {
+        return res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+            components: [
+              {
+                type: MessageComponentTypes.TEXT_DISPLAY,
+                content: `Account : ${gameName}#${gameTag} is not registered within the bot.`
+              }
+            ]
+          }
+        });
+      }
+    }
   }
 
   console.error('unknown interaction type', type);
@@ -83,3 +119,4 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 app.listen(PORT, () => {
   console.log('Listening on port', PORT);
 });
+
