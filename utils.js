@@ -50,3 +50,12 @@ export async function deletePlayerProfile(gameName,gameTag) {
     return false;
   }
 }
+
+export async function sendFollowupMessage(interactionToken, content) {
+  await DiscordRequest(`webhooks/${process.env.APP_ID}/${interactionToken}`, {
+    method: 'POST',
+    body: {
+      content: content
+    }
+  });
+}

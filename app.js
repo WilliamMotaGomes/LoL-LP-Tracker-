@@ -8,8 +8,8 @@ import {
   MessageComponentTypes,
   verifyKeyMiddleware,
 } from 'discord-interactions';
-import {deletePlayerProfile} from './utils.js'
-import {setupPlayer} from './lolApi.js'
+import {deletePlayerProfile,sendFollowupMessage} from './utils.js'
+import {setupPlayer,isPlayerInGame} from './lolApi.js'
 
 // Create an express app
 const app = express();
@@ -109,6 +109,25 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
           }
         });
       }
+    }
+    else if (name === 'update')
+    {
+      res.send({
+        type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+      });
+
+      const messages = await isPlayerInGame();
+
+      if (!messages || messages.length === 0) {
+        await sendFollowupMessage(req.body.token, 'No players are currently in a game.');
+        return;
+      }
+
+      for (const msg of messages) {
+        await sendFollowupMessage(req.body.token, msg);
+      }
+
+      return; 
     }
   }
 

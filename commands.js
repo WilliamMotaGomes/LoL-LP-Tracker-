@@ -67,6 +67,14 @@ const REMOVE_ACCOUNT_COMMAND = {
   }]
 };
 
-const ALL_COMMANDS = [ADD_ACCOUNT_COMMAND,REMOVE_ACCOUNT_COMMAND];
+const UPDATE_COMMAND = {
+  name: 'update',
+  description: 'update',
+  type: 1,
+  integration_types: [0, 1],
+  contexts: [0, 1, 2]
+};
+
+const ALL_COMMANDS = [ADD_ACCOUNT_COMMAND,REMOVE_ACCOUNT_COMMAND,UPDATE_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
